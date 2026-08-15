@@ -1,11 +1,22 @@
 pipeline {
     agent any
 
+    environment {
+        PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+    }
+
     stages {
 
         stage('Checkout') {
             steps {
                 checkout scm
+            }
+        }
+
+        stage('Check Node and npm') {
+            steps {
+                sh 'node -v'
+                sh 'npm -v'
             }
         }
 
