@@ -39,7 +39,18 @@ pipeline {
         stage('Frontend Build') {
             steps {
                 dir('frontend') {
-                    sh 'npm run build'
+                    sh 'CI=true npm run build'
+                }
+            }
+        }
+
+        stage('Deploy to Render') {
+            steps {
+                withCredentials([string(
+                    credentialsId: 'render-deploy-hook',
+                    variable: 'RENDER_DEPLOY_HOOK'
+                )]) {
+                    sh 'curl -X POST "$RENDER_DEPLOY_HOOK"'
                 }
             }
         }
@@ -47,11 +58,11 @@ pipeline {
 
     post {
         success {
-            echo 'CI Pipeline completed successfully!'
+            echo 'CI/CD Pipeline completed successfully!'
         }
 
         failure {
-            echo 'CI Pipeline failed.'
+            echo 'CI/CD Pipeline failed.'
         }
     }
 }
